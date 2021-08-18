@@ -1,4 +1,10 @@
-import React, { InputHTMLAttributes, useEffect, useRef } from 'react';
+import React, {
+  InputHTMLAttributes,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+} from 'react';
 import { IconBaseProps } from 'react-icons';
 import { useField } from '@unform/core';
 import { Container } from './style';
@@ -19,16 +25,21 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
   // a useRef server para disponibilizar o componente para busca no dom
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  // essa const inputRef é o propio input declarado la em baixo
 
-  // o useField serve para registrar o componente na dom
+  // o useField serve para registrar o componente na dom e poder obter ele
   /*
    * fieldName -> nome do fild
    * defaultValue -> valor inicial do input
    * error -> caso queira tratar erros
    * registerField -> server para registrar o componente no unform
+   *
    */
   const { fieldName, defaultValue, error, registerField } = useField(name);
+
+  const [isFocused, setFocused] = useState(false);
+  const [isFielld, setFielld] = useState(false);
 
   useEffect(() => {
     // registra o fild na dom
@@ -42,14 +53,34 @@ const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
     });
   }, [fieldName, registerField]);
 
+  // sempre que for criar uma funcao em um componente deve usar useCallback
+  // pois essa função ira ser carregada apenas quando as condicoes estabelecidas
+  // nos [] mudarem é igual o useEffect
+  const handleInputBlur = useCallback(() => {
+    setFocused(false);
+    // quando quer chegar se um atributo está preenchido
+    // coloca ? antes ai so vai pegar o value caso o current esteja preenchido
+    setFielld(Boolean(inputRef.current?.value));
+  }, []);
+
+  const handleInputFocus = useCallback(() => {
+    setFocused(true);
+  }, []);
+
   return (
-    <Container>
+    <Container isFielld={isFielld} isFocused={isFocused}>
       {/* aqui utiliza Icon e nao icon para que o react intenda que é um componente
     na verdade é mais um rename  */}
       {Icon && <Icon size={20} />}
       {/* aqui o ref={inputRef} serve para registra a ref do componente */}
       {/* o defaultValue serve para quando quer deixar valor setado exp: edicao */}
-      <input defaultValue={defaultValue} ref={inputRef} {...rest} />
+      <input
+        onFocus={handleInputFocus}
+        onBlur={handleInputBlur}
+        defaultValue={defaultValue}
+        ref={inputRef}
+        {...rest}
+      />
     </Container>
   );
 };
