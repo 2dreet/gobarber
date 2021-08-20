@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Form } from '@unform/web';
+import { FormHandles } from '@unform/core';
 import { FiArrowLeft, FiMail, FiLock, FiUser } from 'react-icons/fi';
+// importa tudo dentro da variavel chamada Yup
+import * as Yup from 'yup';
 import { Container, Content, Background } from './style';
 
 import Input from '../../components/Input/index';
@@ -9,9 +12,32 @@ import Button from '../../components/Button/index';
 import logoImg from '../../assets/logo.svg';
 
 const SignUp: React.FC = () => {
-  function handleSubmit(data: any): void {
-    console.log(data);
-  }
+  const formRef = useRef<FormHandles>(null);
+
+  // lembrando do useCallBack serve para não duplicar a msm funcao
+  // deve sempre criar assim!
+  const handleSubmit = useCallback(async (data: any) => {
+    try {
+      // aqui .object() diz que vai ser um objeto depois .shape({}) qual o padrao do objeto
+      const schema = Yup.object().shape({
+        // aqui diz que é uma string e que é obrigatoria
+        name: Yup.string().required('Nome obrigatório'),
+        // aqui diz que é uma string e que é obrigatoria e é um email
+        email: Yup.string()
+          .required('E-mail obrigatório')
+          .email('E-mail inválido'),
+        // aqui diz que é uma string e que tem que ter pelo menos 6 digitos
+        password: Yup.string().min(6, 'No mínimo 6 dígitos'),
+      });
+
+      // validate faz a validacao com os dados recebidos
+      // o abortEarly se estiver falso valida todos os campos
+      // caso o contrario ira validar apenas 1 por vez
+      await schema.validate(data, { abortEarly: false });
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   return (
     <Container>
@@ -23,7 +49,7 @@ const SignUp: React.FC = () => {
             aqui para passar para o form qual valor inicial do mesmo
             <Form initialData={{ name: 'José' }} onSubmit={handleSubmit}>
           */}
-        <Form onSubmit={handleSubmit}>
+        <Form ref={formRef} onSubmit={handleSubmit}>
           <h1>Faça seu cadastro</h1>
 
           <Input name="name" icon={FiUser} type="text" placeholder="Nome" />
