@@ -6,6 +6,8 @@ import { FiArrowLeft, FiMail, FiLock, FiUser } from 'react-icons/fi';
 import * as Yup from 'yup';
 import { Container, Content, Background } from './style';
 
+import getValidationErros from '../../utils/getValidationErros';
+
 import Input from '../../components/Input/index';
 import Button from '../../components/Button/index';
 
@@ -18,6 +20,8 @@ const SignUp: React.FC = () => {
   // deve sempre criar assim!
   const handleSubmit = useCallback(async (data: any) => {
     try {
+      formRef.current?.setErrors({});
+
       // aqui .object() diz que vai ser um objeto depois .shape({}) qual o padrao do objeto
       const schema = Yup.object().shape({
         // aqui diz que é uma string e que é obrigatoria
@@ -35,7 +39,8 @@ const SignUp: React.FC = () => {
       // caso o contrario ira validar apenas 1 por vez
       await schema.validate(data, { abortEarly: false });
     } catch (error) {
-      console.log(error);
+      const erros = getValidationErros(error);
+      formRef.current?.setErrors(erros);
     }
   }, []);
 

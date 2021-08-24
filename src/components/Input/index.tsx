@@ -6,8 +6,9 @@ import React, {
   useCallback,
 } from 'react';
 import { IconBaseProps } from 'react-icons';
+import { FiAlertCircle } from 'react-icons/fi';
 import { useField } from '@unform/core';
-import { Container } from './style';
+import { Container, Error } from './style';
 
 // InputHTMLAttributes: interface responsavel por receber todos os atributos
 // do input do html mas precisa passar uma tipagem  InputHTMLAttributes<HTMLInputElement>
@@ -68,7 +69,7 @@ const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
   }, []);
 
   return (
-    <Container isFielld={isFielld} isFocused={isFocused}>
+    <Container isErrored={!!error} isFielld={isFielld} isFocused={isFocused}>
       {/* aqui utiliza Icon e nao icon para que o react intenda que é um componente
     na verdade é mais um rename  */}
       {Icon && <Icon size={20} />}
@@ -81,6 +82,12 @@ const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
         ref={inputRef}
         {...rest}
       />
+      {error && (
+        // aqui mostra o componente tooltip de erro
+        <Error title={error}>
+          <FiAlertCircle color="#c53030" size={20} />
+        </Error>
+      )}
     </Container>
   );
 };
