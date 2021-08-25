@@ -25,7 +25,9 @@ const Signin: React.FC = () => {
   // apartir dos componentes filhos dele
   // aqui depois de criado o componente de contexto é possivel acessar o contexto
   // lembrando que deve importar o contexto
-  const { singIn } = useContext(AuthContext);
+  const { user, singIn } = useContext(AuthContext);
+
+  console.log(user);
 
   // toda variavel ou dependencia externa que é usado dentro dos useCallBack deve ser adicionar la na verificacao []
   const handleLogin = useCallback(
