@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useState } from 'react';
+import React, { createContext, useCallback, useState, useContext } from 'react';
 
 import Api from '../services/Api';
 
@@ -22,16 +22,16 @@ interface AuthContextPayload {
   // aqui tipagem de funcao como é async deve retornar uma promisse
   // outra coisa é a tipagem dos parametros
   singIn(creadencials: SingInCreadencials): Promise<void>;
+
+  singOut(): void;
 }
 
 // aqui força criar um Objeto vaziu
 // createContext cria o contexto
-export const AuthContext = createContext<AuthContextPayload>(
-  {} as AuthContextPayload,
-);
+const AuthContext = createContext<AuthContextPayload>({} as AuthContextPayload);
 
 // aqui criou-se o compoente de contexto para o login para poder isolar as funcoes desse contexto
-export const AuthProvider: React.FC = ({ children }) => {
+const AuthProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<AuthState>(() => {
     const token = localStorage.getItem('@GoBarber:token');
     const user = localStorage.getItem('@GoBarber:user');
@@ -66,12 +66,32 @@ export const AuthProvider: React.FC = ({ children }) => {
     }
   }, []);
 
+  const singOut = useCallback(() => {
+    // salva no local storage o usuario e o token
+    localStorage.removeItem('@GoBarber:token');
+    localStorage.removeItem('@GoBarber:user');
+
+    setData({} as AuthState);
+  }, []);
+
   return (
     // aqui atribui ao contexto o usuario
-    <AuthContext.Provider value={{ user: data.user, singIn }}>
+    <AuthContext.Provider value={{ user: data.user, singIn, singOut }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export default AuthContext;
+// aqui é criado um HOOK para usar o context de login
+// ai para usar o contexto é só importar o useAuth no componentes
+// filhos ou os componentes que estão dentro dessa context que já tera acesso ao context
+function useAuth(): AuthContextPayload {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+
+  return context;
+}
+
+export { AuthProvider, useAuth };

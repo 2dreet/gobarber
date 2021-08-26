@@ -1,7 +1,8 @@
 import React from 'react';
 import GlobalStyle from './styles/global';
 import SignIn from './pages/SignIn';
-import { AuthProvider } from './context/AuthContext';
+
+import AppProvider from './hooks/index';
 
 const App: React.FC = () => (
   <>
@@ -11,9 +12,10 @@ const App: React.FC = () => (
         isolar as funcoes dele
      */}
 
-    <AuthProvider>
+    <AppProvider>
       <SignIn />
-    </AuthProvider>
+    </AppProvider>
+
     <GlobalStyle />
   </>
 );
