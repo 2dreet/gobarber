@@ -47,23 +47,19 @@ const AuthProvider: React.FC = ({ children }) => {
   });
 
   const singIn = useCallback(async ({ email, password }) => {
-    try {
-      const response = await Api.post<SinginResponse>('/sessions', {
-        email,
-        password,
-      });
+    const response = await Api.post<SinginResponse>('/sessions', {
+      email,
+      password,
+    });
 
-      const { token, user } = response.data;
+    const { token, user } = response.data;
 
-      // salva no local storage o usuario e o token
-      localStorage.setItem('@GoBarber:token', token);
-      localStorage.setItem('@GoBarber:user', JSON.stringify(user));
+    // salva no local storage o usuario e o token
+    localStorage.setItem('@GoBarber:token', token);
+    localStorage.setItem('@GoBarber:user', JSON.stringify(user));
 
-      // seta no data o token e o usuario
-      setData({ token, user });
-    } catch (err) {
-      console.log(err);
-    }
+    // seta no data o token e o usuario
+    setData({ token, user });
   }, []);
 
   const singOut = useCallback(() => {
