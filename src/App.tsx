@@ -1,8 +1,9 @@
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import GlobalStyle from './styles/global';
-import SignIn from './pages/SignIn';
 
 import AppProvider from './hooks/index';
+import Routes from './routes/index';
 
 const App: React.FC = () => (
   <>
@@ -11,12 +12,13 @@ const App: React.FC = () => (
         foi criado um compoente de contexto para poder
         isolar as funcoes dele
      */}
+    <BrowserRouter>
+      <AppProvider>
+        <Routes />
+      </AppProvider>
 
-    <AppProvider>
-      <SignIn />
-    </AppProvider>
-
-    <GlobalStyle />
+      <GlobalStyle />
+    </BrowserRouter>
   </>
 );
 export default App;

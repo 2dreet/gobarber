@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { shade } from 'polished';
 import signinImgBackground from '../../assets/sign-in-background.png';
 
@@ -19,6 +19,40 @@ export const Content = styled.div`
 
   width: 100%;
   max-width: 700px;
+`;
+export const Background = styled.div`
+  flex: 1;
+
+  background: url(${signinImgBackground}) no-repeat center;
+  // ajusta 100% do tamanho disponivel
+  background-size: cover;
+`;
+
+// utilizado para fazer animacao em componente
+const apperFromLeft = keyframes`
+
+  from {
+    opacity: 0;
+    transform: translateX(-50px)
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0px)
+  }
+
+`;
+
+export const AnimationContainer = styled.div`
+  display: flex;
+  // aqui faz flex por culunas
+  flex-direction: column;
+  align-items: center;
+  // aqui centraliza x e y
+  place-content: center;
+
+  // aqui utiliza a animacao criada
+  animation: ${apperFromLeft} 1s;
 
   form {
     margin: 80px 0;
@@ -60,11 +94,4 @@ export const Content = styled.div`
       margin-right: 16px;
     }
   }
-`;
-export const Background = styled.div`
-  flex: 1;
-
-  background: url(${signinImgBackground}) no-repeat center;
-  // ajusta 100% do tamanho disponivel
-  background-size: cover;
 `;

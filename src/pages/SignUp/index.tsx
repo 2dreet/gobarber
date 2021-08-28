@@ -1,10 +1,11 @@
 import React, { useCallback, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import { FiArrowLeft, FiMail, FiLock, FiUser } from 'react-icons/fi';
 // importa tudo dentro da variavel chamada Yup
 import * as Yup from 'yup';
-import { Container, Content, Background } from './style';
+import { Container, Content, Background, AnimationContainer } from './style';
 
 import getValidationErros from '../../utils/getValidationErros';
 
@@ -49,28 +50,35 @@ const SignUp: React.FC = () => {
       <Background />
 
       <Content>
-        <img src={logoImg} alt="GoBarber" />
-        {/*
+        <AnimationContainer>
+          <img src={logoImg} alt="GoBarber" />
+          {/*
             aqui para passar para o form qual valor inicial do mesmo
             <Form initialData={{ name: 'José' }} onSubmit={handleSubmit}>
           */}
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <h1>Faça seu cadastro</h1>
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <h1>Faça seu cadastro</h1>
 
-          <Input name="name" icon={FiUser} type="text" placeholder="Nome" />
-          <Input name="email" icon={FiMail} type="text" placeholder="E-mail" />
-          <Input
-            name="password"
-            icon={FiLock}
-            type="password"
-            placeholder="Senha"
-          />
-          <Button type="submit"> Cadastrar</Button>
-        </Form>
+            <Input name="name" icon={FiUser} type="text" placeholder="Nome" />
+            <Input
+              name="email"
+              icon={FiMail}
+              type="text"
+              placeholder="E-mail"
+            />
+            <Input
+              name="password"
+              icon={FiLock}
+              type="password"
+              placeholder="Senha"
+            />
+            <Button type="submit"> Cadastrar</Button>
+          </Form>
 
-        <a href="new">
-          <FiArrowLeft /> Voltar para logon
-        </a>
+          <Link to="/">
+            <FiArrowLeft /> Voltar para logon
+          </Link>
+        </AnimationContainer>
       </Content>
     </Container>
   );
